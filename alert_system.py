@@ -26,14 +26,19 @@ class AlertSystem:
             voice_tags.append("volume spike")
         voice_desc = ", ".join(voice_tags) if voice_tags else "normal tone"
 
-        return (
+        message = (
             "[ALERT] Potential harmful communication detected.\n"
             f"Time: {event.start:.1f}s-{event.end:.1f}s\n"
             f"Sentence: \"{event.sentence}\"\n"
+        )
+        if getattr(event, "sentence_en", None) and event.sentence_en != event.sentence:
+            message += f"(EN): \"{event.sentence_en}\"\n"
+        message += (
             f"Classification: {event.harm_result.label} ({event.harm_result.score:.2f})\n"
             f"Voice signature: {voice_desc}\n"
             f"Risk score: {event.final_risk:.2f}"
         )
+        return message
 
     def send_alert(self, event: FlaggedEvent) -> bool:
         message_body = self.build_message(event)

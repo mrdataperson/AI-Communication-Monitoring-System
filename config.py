@@ -13,9 +13,18 @@ TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER", "+1XXXXXXXXXX")   # Twilio 
 EMERGENCY_CONTACT_NUMBER = os.getenv("EMERGENCY_CONTACT_NUMBER", "+91XXXXXXXXXX")  # who receives the alert
 
 # ---------------- Whisper (speech-to-text) ----------------
-WHISPER_MODEL_SIZE = "base"     # tiny/base/small/medium/large-v3 (bigger = more accurate, slower)
+WHISPER_MODEL_SIZE = "small"    # tiny/base/small/medium/large-v3
+                                 # NOTE: "small" or bigger is strongly recommended for Tamil --
+                                 # "tiny"/"base" are much less accurate on Indian languages.
 WHISPER_DEVICE = "cpu"          # "cuda" if you have a GPU
 WHISPER_COMPUTE_TYPE = "int8"   # int8 is fast on CPU
+WHISPER_LANGUAGE = None         # None = auto-detect language per clip.
+                                 # Set to "ta" to force Tamil (faster + more accurate
+                                 # if you know every clip will be Tamil), or "en" for
+                                 # English-only audio. Auto-detect is safest for mixed
+                                 # Tamil/Thanglish content but can occasionally misfire
+                                 # on heavily code-mixed speech -- pin the language if
+                                 # you notice that happening in testing.
 
 # ---------------- Text threat/harm classification ----------------
 # Zero-shot model -> works on MEANING of the sentence, not a keyword list

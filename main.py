@@ -41,7 +41,9 @@ def process_audio_block(audio: np.ndarray, sample_rate: int, transcriber, fusion
     pitch_analyzer = PitchAnalyzer(audio, sample_rate)
 
     for segment in segments:
-        print(f"\n[Transcript {segment.start:.1f}s-{segment.end:.1f}s] {segment.text}")
+        print(f"\n[Transcript {segment.start:.1f}s-{segment.end:.1f}s, lang={segment.language}] {segment.text}")
+        if segment.language != "en":
+            print(f"  (EN): {segment.text_en}")
         event = fusion_engine.evaluate_segment(segment, pitch_analyzer)
         if event:
             print(f"  -> FLAGGED. risk={event.final_risk:.2f}, "

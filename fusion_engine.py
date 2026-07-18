@@ -19,6 +19,7 @@ from pitch_analyzer import PitchAnalyzer, VoiceWindowStats
 @dataclass
 class FlaggedEvent:
     sentence: str
+    sentence_en: str
     start: float
     end: float
     harmful_words: List[str]
@@ -32,7 +33,10 @@ class FusionEngine:
         self.sentiment_analyzer = sentiment_analyzer
 
     def evaluate_segment(self, segment: Segment, pitch_analyzer: PitchAnalyzer) -> Optional[FlaggedEvent]:
-        harm_result = self.sentiment_analyzer.analyze(segment.text)
+        # Classification always runs on the English translation, since the harm
+        # classifier is an English-only model. segment.text (native language,
+        # e.g. Tamil) is kept separately for display and the alert message.
+        harm_result = self.sentiment_analyzer.analyze(segment.text_en)
         voice_stats = pitch_analyzer.get_window_stats(segment.start, segment.end)
 
         final_risk = (
@@ -51,6 +55,7 @@ class FusionEngine:
         if final_risk >= config.ALERT_RISK_THRESHOLD:
             return FlaggedEvent(
                 sentence=segment.text,
+                sentence_en=segment.text_en,
                 start=segment.start,
                 end=segment.end,
                 harmful_words=harmful_words,
