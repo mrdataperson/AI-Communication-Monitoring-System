@@ -1,0 +1,9 @@
+faster-whisper==1.0.3
+transformers==4.44.2
+torch==2.4.0
+librosa==0.10.2.post1
+soundfile==0.12.1
+sounddevice==0.4.7
+numpy==1.26.4
+scipy==1.13.1
+twilio==9.2.3
